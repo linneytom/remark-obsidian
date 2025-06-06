@@ -3,6 +3,12 @@ import { parse } from 'yaml';
 import slugify from 'slugify';
 import { CODE_BLOCK_REGEX, BRACKET_LINK_REGEX } from './constants';
 
+
+
+function slugStr(s) {
+    return slugify(s.replace('-','_').replace('/', '-').replace(/\.md$/, ''), { lower: true, replacement: '_'})
+}
+
 export const extractFrontmatter = (markdown) => {
     const frontmatter = markdown.match(/^---([\s\S]+?)---/);
 
@@ -23,7 +29,7 @@ export const titleToUrl = (title, folder) => {
         return `/${slug}`;
     }
 
-    return `/${slugify(title, { lower: true })}`;
+    return `/${slugStr(title)}`;
 };
 
 export const removeIgnoreParts = (tree) => {
@@ -69,7 +75,7 @@ export const parseBracketLink = (bracketLink, titleToUrlFn = titleToUrl) => {
     const href = titleToUrlFn(link);
 
     return {
-        href: heading ? `${href}#${slugify(heading, { lower: true })}` : href,
+        href: heading ? `${href}#${slugStr(heading)}` : href,
         title: text || (heading ? link : link),
         slug: href.replace(/\//g, ''),
     };
